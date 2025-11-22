@@ -38,15 +38,38 @@ chmod +x install.sh monitor.py
 
 ## 🚀 Kullanım
 
+### Docker Kullanıcıları (Otomatik)
+
 ```bash
-# Basit
+# Container'ı otomatik bulur
 ./monitor.py
+```
 
-# Veya
-python3 monitor.py
+### Screen/Tmux Kullanıcıları (Manuel)
 
-# Belirli container
-python3 monitor.py --container rl-swarm-swarm-cpu-1
+**Seçenek 1: Log dosyasını belirt**
+```bash
+# rl-swarm'ı screen'de çalıştır ve log'a yaz
+screen -S codezero
+python run_rl_swarm.py 2>&1 | tee ~/codezero.log
+
+# Başka terminalde monitor'u başlat
+./monitor.py --log-file ~/codezero.log
+```
+
+**Seçenek 2: Mevcut log dosyasını kullan**
+```bash
+# Log dosyasını bul
+find ~ -name "*.log" -mtime -1
+
+# Monitor'u başlat
+./monitor.py --log-file /path/to/your/log.txt
+```
+
+### Belirli Container İzle
+
+```bash
+./monitor.py --container rl-swarm-swarm-cpu-1
 ```
 
 **Çıkmak için:** `Ctrl+C`

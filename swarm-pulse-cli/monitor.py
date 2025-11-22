@@ -21,8 +21,30 @@ import sys
 console = Console()
 
 class CodeZeroMonitor:
-    def __init__(self, container_name=None):
-        self.container_name = container_name or self.find_container()
+    def __init__(self, log_file=None, container_name=None):
+        self.log_file = log_file
+        self.container_name = container_name
+        self.mode = None
+        
+        # Determine monitoring mode
+        if log_file:
+            self.mode = "file"
+            self.log_position = 0
+        elif container_name:
+            self.mode = "docker"
+            self.container_name = container_name
+        else:
+            # Auto-detect
+            self.container_name = self.find_container()
+            if self.container_name:
+                self.mode = "docker"
+            else:
+                # Try to find log file
+                self.log_file = self.find_log_file()
+                if self.log_file:
+                    self.mode = "file"
+                    self.log_position = 0
+        
         self.metrics = {
             'loss': deque(maxlen=20),
             'rewards': deque(maxlen=20),
@@ -32,6 +54,23 @@ class CodeZeroMonitor:
             'total_rewards': 0.0,
             'epochs': 0
         }
+    
+    def find_log_file(self):
+        """Find log file in common locations"""
+        import os
+        common_paths = [
+            os.path.expanduser("~/rl-swarm/output.log"),
+            os.path.expanduser("~/rl-swarm/logs/node.log"),
+            os.path.expanduser("~/.codezero/logs/node.log"),
+            os.path.expanduser("~/codezero/logs/node.log"),
+            "/var/log/codezero/node.log",
+        ]
+        
+        for path in common_paths:
+            if os.path.exists(path):
+                return path
+        
+        return None
         
     def find_container(self):
         """Find rl-swarm container"""
@@ -47,20 +86,35 @@ class CodeZeroMonitor:
         except:
             return None
     
-    def get_docker_logs(self, lines=50):
-        """Get recent Docker logs"""
-        if not self.container_name:
+    def get_logs(self, lines=50):
+        """Get logs based on mode"""
+        if self.mode == "docker":
+            return self.get_docker_logs(lines)
+        elif self.mode == "file":
+            return self.get_file_logs(lines)
+        return []
+    
+    def get_file_logs(self, lines=50):
+        """Read logs from file (tail -f style)"""
+        if not self.log_file:
             return []
         
         try:
-            result = subprocess.run(
-                ['docker', 'logs', '--tail', str(lines), self.container_name],
-                capture_output=True,
-                text=True,
-                timeout=5
-            )
-            return result.stdout.split('\n')
-        except:
+            with open(self.log_file, 'r') as f:
+                # Seek to last position
+                f.seek(self.log_position)
+                new_lines = f.readlines()
+                self.log_position = f.tell()
+                
+                # If first read, get last N lines
+                if not new_lines and self.log_position == 0:
+                    f.seek(0)
+                    all_lines = f.readlines()
+                    new_lines = all_lines[-lines:] if len(all_lines) > lines else all_lines
+                    self.log_position = f.tell()
+                
+                return [line.strip() for line in new_lines]
+        except Exception as e:
             return []
     
     def parse_logs(self, logs):
@@ -117,8 +171,9 @@ class CodeZeroMonitor:
         
         # Header
         status, emoji = self.get_health_status()
+        mode_text = f"Docker: {self.container_name}" if self.mode == "docker" else f"File: {self.log_file}"
         header = Panel(
-            f"[bold cyan]🌊 Swarm Pulse CLI[/bold cyan] | Status: {emoji} {status.upper()}",
+            f"[bold cyan]🌊 Swarm Pulse CLI[/bold cyan] | {mode_text}\nStatus: {emoji} {status.upper()}",
             style="bold white on blue"
         )
         
@@ -195,17 +250,27 @@ class CodeZeroMonitor:
     
     def run(self):
         """Main monitoring loop"""
-        if not self.container_name:
-            console.print("[red]❌ RL-Swarm container not found![/red]")
-            console.print("[yellow]Start your node first:[/yellow]")
-            console.print("  cd ~/rl-swarm && docker-compose run --rm --build -Pit swarm-cpu")
+        if not self.mode:
+            console.print("[red]❌ No log source found![/red]")
+            console.print("\n[yellow]Options:[/yellow]")
+            console.print("  1. Start rl-swarm with Docker:")
+            console.print("     cd ~/rl-swarm && docker-compose run --rm --build -Pit swarm-cpu")
+            console.print("\n  2. Specify log file manually:")
+            console.print("     ./monitor.py --log-file /path/to/your/log.txt")
+            console.print("\n  3. Run rl-swarm in screen/tmux and redirect output:")
+            console.print("     screen -S codezero")
+            console.print("     python run_rl_swarm.py 2>&1 | tee ~/codezero.log")
             sys.exit(1)
         
-        console.print(f"[green]✅ Monitoring container: {self.container_name}[/green]")
+        if self.mode == "docker":
+            console.print(f"[green]✅ Monitoring Docker container: {self.container_name}[/green]")
+        else:
+            console.print(f"[green]✅ Monitoring log file: {self.log_file}[/green]")
+        
         console.print("[dim]Loading initial data...[/dim]\n")
         
         # Initial load
-        logs = self.get_docker_logs(100)
+        logs = self.get_logs(100)
         self.parse_logs(logs)
         
         # Live update
@@ -213,7 +278,7 @@ class CodeZeroMonitor:
             try:
                 while True:
                     # Get new logs
-                    logs = self.get_docker_logs(20)
+                    logs = self.get_logs(20)
                     self.parse_logs(logs)
                     
                     # Update display
@@ -224,5 +289,12 @@ class CodeZeroMonitor:
                 console.print("\n[yellow]👋 Monitoring stopped[/yellow]")
 
 if __name__ == "__main__":
-    monitor = CodeZeroMonitor()
+    import argparse
+    
+    parser = argparse.ArgumentParser(description='Swarm Pulse CLI - CodeZero Node Monitor')
+    parser.add_argument('--log-file', '-f', help='Path to log file (for screen/tmux users)')
+    parser.add_argument('--container', '-c', help='Docker container name')
+    args = parser.parse_args()
+    
+    monitor = CodeZeroMonitor(log_file=args.log_file, container_name=args.container)
     monitor.run()
