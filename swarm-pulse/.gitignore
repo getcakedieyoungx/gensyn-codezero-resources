@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+temp_log.txt
+*.tmp
+*.temp
+
+# Sample logs should be included
+!sample_logs/
+!sample_logs/**
+
+# OS
+.DS_Store
+Thumbs.db
