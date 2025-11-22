@@ -8,7 +8,8 @@ Community-driven resources, guides, and tools for Gensyn's CodeZero cooperative 
 
 ## 🛠️ Tools
 
-- **[Swarm Pulse](./swarm-pulse/)** - Real-time log visualizer with interactive charts and health monitoring
+- **[Swarm Pulse](./swarm-pulse/)** - Real-time log visualizer with interactive charts and health monitoring (Web-based)
+- **[Swarm Pulse CLI](./swarm-pulse-cli/)** - Terminal-based monitoring tool - `htop` style for CodeZero (SSH-friendly)
 
 ## 🎯 About
 
