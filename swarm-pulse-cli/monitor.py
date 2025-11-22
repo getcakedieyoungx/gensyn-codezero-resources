@@ -117,30 +117,38 @@ class CodeZeroMonitor:
         except Exception as e:
             return []
     
+    def strip_ansi(self, text):
+        """Strip ANSI color codes"""
+        ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+        return ansi_escape.sub('', text)
+
     def parse_logs(self, logs):
         """Parse logs and update metrics"""
         for line in logs:
+            # Clean line
+            clean_line = self.strip_ansi(line)
+            
             # Policy update
-            match = re.search(r'epoch=(\d+).*loss=([\d.]+)', line)
+            match = re.search(r'epoch=(\d+).*loss=([\d.]+)', clean_line)
             if match:
                 self.metrics['epochs'] = int(match.group(1))
                 self.metrics['loss'].append(float(match.group(2)))
                 self.metrics['last_update'] = datetime.now()
             
             # Reward
-            match = re.search(r'amount=([\d.]+)', line)
+            match = re.search(r'amount=([\d.]+)', clean_line)
             if match:
                 reward = float(match.group(1))
                 self.metrics['rewards'].append(reward)
                 self.metrics['total_rewards'] += reward
             
             # Difficulty
-            match = re.search(r'Difficulty adjusted: \d+ → (\d+)', line)
+            match = re.search(r'Difficulty adjusted: \d+ → (\d+)', clean_line)
             if match:
                 self.metrics['difficulty'] = int(match.group(1))
             
             # Diversity
-            match = re.search(r'diversity_score=([\d.]+)', line)
+            match = re.search(r'diversity_score=([\d.]+)', clean_line)
             if match:
                 self.metrics['diversity'].append(float(match.group(1)))
     
