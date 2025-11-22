@@ -22,7 +22,8 @@ A lightweight Python tool that helps CodeZero node runners understand if they're
 
 ```bash
 # Clone the repository
-cd swarm-pulse
+git clone https://github.com/getcakedieyoungx/gensyn-codezero-resources.git
+cd gensyn-codezero-resources/swarm-pulse
 
 # Install dependencies
 pip install -r requirements.txt
