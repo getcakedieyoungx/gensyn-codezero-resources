@@ -84,7 +84,8 @@ with st.sidebar:
         if sample_path.exists():
             if st.button("📋 Use Sample Data"):
                 st.session_state.log_file_path = str(sample_path)
-                st.session_state.data = st.session_state.parser.parse_file(str(sample_path))
+                st.session_state.parser.parse_file(str(sample_path))
+                st.session_state.data = st.session_state.parser.get_data_dict()
                 st.session_state.last_update = datetime.now()
                 st.rerun()
         
@@ -94,7 +95,8 @@ with st.sidebar:
             temp_path.write_bytes(uploaded_file.getvalue())
             
             st.session_state.log_file_path = str(temp_path)
-            st.session_state.data = st.session_state.parser.parse_file(str(temp_path))
+            st.session_state.parser.parse_file(str(temp_path))
+            st.session_state.data = st.session_state.parser.get_data_dict()
             st.session_state.last_update = datetime.now()
             st.success("✅ File loaded successfully!")
     
@@ -114,7 +116,8 @@ with st.sidebar:
                     st.session_state.log_file_path = log_path
                     st.session_state.monitoring = True
                     # Load historical data first
-                    st.session_state.data = st.session_state.parser.parse_file(log_path)
+                    st.session_state.parser.parse_file(log_path)
+                    st.session_state.data = st.session_state.parser.get_data_dict()
                     st.session_state.last_update = datetime.now()
                     st.success("🟢 Monitoring started!")
                     st.rerun()
@@ -148,9 +151,10 @@ with st.sidebar:
             
             # Re-parse file to get new entries
             if st.session_state.log_file_path:
-                st.session_state.data = st.session_state.parser.parse_file(
+                st.session_state.parser.parse_file(
                     st.session_state.log_file_path
                 )
+                st.session_state.data = st.session_state.parser.get_data_dict()
                 st.session_state.last_update = datetime.now()
                 st.rerun()
     

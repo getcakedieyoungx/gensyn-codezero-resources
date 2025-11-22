@@ -6,6 +6,10 @@ Community-driven resources, guides, and tools for Gensyn's CodeZero cooperative 
 
 - **[How to Read Your CodeZero Logs](./codezero_log_guide.md)** - Complete guide to understanding log messages, policy updates, and rewards
 
+## 🛠️ Tools
+
+- **[Swarm Pulse](./swarm-pulse/)** - Real-time log visualizer with interactive charts and health monitoring
+
 ## 🎯 About
 
 This repository contains educational content and tools to help node runners understand and optimize their CodeZero experience.
