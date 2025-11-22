@@ -38,6 +38,37 @@ streamlit run app.py
 
 The dashboard will open in your browser at `http://localhost:8501`
 
+### VPS/Server Deployment (Recommended)
+
+If you're running this on a VPS where your CodeZero node is located:
+
+```bash
+# 1. Clone and install
+git clone https://github.com/getcakedieyoungx/gensyn-codezero-resources.git
+cd gensyn-codezero-resources/swarm-pulse
+pip install -r requirements.txt
+
+# 2. Create config file
+cp config.ini.example config.ini
+
+# 3. Edit config.ini and set your log file path
+nano config.ini
+# Set: log_file_path = /path/to/your/codezero/node.log
+# Set: auto_start = true
+
+# 4. Run the dashboard
+streamlit run app.py --server.address=0.0.0.0
+```
+
+Then access via SSH tunnel:
+```bash
+# On your local machine
+ssh -L 8501:localhost:8501 user@your-vps-ip
+```
+
+Open `http://localhost:8501` in your browser - your logs will load automatically!
+
+
 ## 📖 How to Use
 
 ### Option 1: File Upload Mode

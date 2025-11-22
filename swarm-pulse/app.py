@@ -57,6 +57,33 @@ if 'log_file_path' not in st.session_state:
 if 'last_update' not in st.session_state:
     st.session_state.last_update = None
 
+# Load config file if exists
+if 'config_loaded' not in st.session_state:
+    st.session_state.config_loaded = False
+    config_path = Path(__file__).parent / "config.ini"
+    if config_path.exists():
+        import configparser
+        config = configparser.ConfigParser()
+        config.read(config_path)
+        
+        # Auto-load log file path
+        if config.has_option('DEFAULT', 'log_file_path'):
+            log_path = config.get('DEFAULT', 'log_file_path').strip()
+            if log_path and Path(log_path).exists():
+                st.session_state.log_file_path = log_path
+                st.session_state.parser.parse_file(log_path)
+                st.session_state.data = st.session_state.parser.get_data_dict()
+                st.session_state.last_update = datetime.now()
+                
+                # Auto-start monitoring if configured
+                if config.has_option('DEFAULT', 'auto_start'):
+                    auto_start = config.getboolean('DEFAULT', 'auto_start')
+                    if auto_start:
+                        st.session_state.monitoring = True
+        
+        st.session_state.config_loaded = True
+
+
 # Header
 st.title("🌊 Swarm Pulse")
 st.markdown("**Real-time CodeZero Node Monitor**")

@@ -21,6 +21,9 @@ temp_log.txt
 *.tmp
 *.temp
 
+# User configuration
+config.ini
+
 # Sample logs should be included
 !sample_logs/
 !sample_logs/**

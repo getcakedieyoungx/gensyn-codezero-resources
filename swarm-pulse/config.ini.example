@@ -1,0 +1,15 @@
+# Swarm Pulse Configuration
+# Copy this file to config.ini and set your log file path
+
+[DEFAULT]
+# Path to your CodeZero node log file
+# Examples:
+#   Linux/Mac: /var/log/codezero/node.log
+#   Windows: C:\codezero\logs\node.log
+log_file_path = 
+
+# Auto-start monitoring on launch (true/false)
+auto_start = false
+
+# Auto-refresh interval in seconds (1-10)
+refresh_interval = 2
