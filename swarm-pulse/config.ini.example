@@ -3,9 +3,15 @@
 
 [DEFAULT]
 # Path to your CodeZero node log file
-# Examples:
-#   Linux/Mac: /var/log/codezero/node.log
-#   Windows: C:\codezero\logs\node.log
+# 
+# Common locations (check these first):
+#   ~/.codezero/logs/node.log
+#   ~/codezero/logs/node.log
+#   /var/log/codezero/node.log
+#   /opt/codezero/logs/node.log
+#
+# To find your log file, run: ./find_log.sh
+#
 log_file_path = 
 
 # Auto-start monitoring on launch (true/false)
