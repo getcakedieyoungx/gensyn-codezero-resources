@@ -1,0 +1,134 @@
+🧵 TWITTER THREAD - COPY & PASTE READY
+
+---
+
+TWEET 1/10 (Hook):
+Running a @gensynai CodeZero node but confused by the logs? 
+
+What does "Policy Update" mean? How do you know if you're earning rewards?
+
+I wrote a complete guide to decode your logs 👇
+
+---
+
+TWEET 2/10:
+First, understand the 3 core log types:
+
+📊 Training Logs → Is your node learning?
+🌐 Network Logs → Are you connected to the swarm?
+💰 Reward Logs → Are you earning?
+
+Let's break down each one.
+
+---
+
+TWEET 3/10:
+TRAINING LOGS: Look for "Policy Update"
+
+Example:
+`[INFO] Policy update received (epoch=127, loss=0.0342)`
+
+• epoch = training iteration
+• loss = how "wrong" your strategy is
+
+✅ Healthy: loss DECREASING over time
+🚩 Red flag: loss stuck for 50+ epochs
+
+---
+
+TWEET 4/10:
+Another key metric: "Rollout Generated"
+
+Example:
+`[DEBUG] Rollout generated (diversity_score=0.73)`
+
+This is CodeZero's secret sauce! 🔥
+
+diversity_score > 0.6 = you're contributing UNIQUE solutions
+
+This is what makes cooperative learning work.
+
+---
+
+TWEET 5/10:
+NETWORK LOGS: "Difficulty Adjustment"
+
+Example:
+`[INFO] Difficulty adjusted: 3 → 4 (swarm_success_rate=0.82)`
+
+Unlike Bitcoin (only goes up), CodeZero adjusts BOTH ways:
+• >80% success → harder problems
+• <50% success → easier problems
+
+This keeps the swarm learning optimally.
+
+---
+
+TWEET 6/10:
+REWARD LOGS: "Reward Received"
+
+Example:
+`[INFO] Reward received (amount=0.0042, rank=3/12)`
+
+Your rank matters! CodeZero uses GRPO (Group Relative Policy Optimization)
+
+Even if correct, you earn less if others found better solutions.
+
+It's cooperative, not just competitive.
+
+---
+
+TWEET 7/10:
+How rewards are calculated:
+
+Final Reward = 
+(correctness × 0.5) + 
+(efficiency × 0.25) + 
+(novelty × 0.25)
+
+Example:
+(0.95 × 0.5) + (0.78 × 0.25) + (0.82 × 0.25) = 0.875
+
+High novelty = higher rewards! 💡
+
+---
+
+TWEET 8/10:
+🚩 WARNING PATTERNS:
+
+"The Reward Drought"
+→ Solutions submitted but no rewards
+→ Check your correctness scores
+
+"The Diversity Collapse"
+→ diversity_score dropping fast
+→ You're becoming too similar to others
+
+---
+
+TWEET 9/10:
+✅ HEALTHY NODE SESSION:
+
+• Policy updates every ~5 min
+• Consistent rewards (rank 2-4/10)
+• Decreasing loss over time
+• diversity_score > 0.5
+
+If you see these, you're doing it right! 🎯
+
+---
+
+TWEET 10/10:
+Full guide with examples, troubleshooting, and FAQ:
+
+[GITHUB LINK HERE]
+
+In CodeZero, we learn faster when we share notes 🤝🤖
+
+Questions? Drop them below! 👇
+
+#Gensyn #DePIN #AI #Web3
+
+---
+
+END OF THREAD
