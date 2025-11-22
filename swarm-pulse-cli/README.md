@@ -2,20 +2,29 @@
 
 **Terminal-based CodeZero Node Monitor** - `htop` tarzı, terminalden izle!
 
-## ⚡ Tek Komut Kurulum
+## ⚡ Hızlı Başlangıç (Wizard 🧙‍♂️)
+
+En kolayı! Script sizin için her şeyi ayarlar (Docker veya Screen):
 
 ```bash
-# Clone et
+# 1. İndir
 git clone https://github.com/getcakedieyoungx/gensyn-codezero-resources.git
 cd gensyn-codezero-resources/swarm-pulse-cli
 
-# Kur ve çalıştır
-chmod +x install.sh monitor.py
+# 2. Çalıştır
+chmod +x install.sh wizard.sh monitor.py
 ./install.sh
-./monitor.py
+./wizard.sh
 ```
 
-**DONE!** 🎉
+**Wizard ne yapar?**
+- 🐳 **Docker:** Container'ı bulur ve bağlanır
+- 🖥️ **Screen:** Çalışan session'ı bulur (`swarm` veya `codezero`), loglamayı açar ve bağlanır
+- 📁 **Dosya:** Sistemdeki log dosyalarını tarar
+
+---
+
+## 🚀 Manuel Kullanım
 
 ## 📊 Özellikler
 
