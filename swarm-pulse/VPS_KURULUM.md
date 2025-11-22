@@ -16,31 +16,37 @@ pip install -r requirements.txt
 
 ### 2. Log Dosyasını Bul
 
-**Kolay yol - Script kullan:**
+**RL-Swarm (Docker) kullanıyorsanız (çoğu kişi):**
+
 ```bash
+# 1. Script'i çalıştır
 chmod +x find_log.sh
 ./find_log.sh
+
+# 2. Docker loglarını dosyaya yönlendir
+docker ps  # Container adını bul (örn: rl-swarm-swarm-cpu-1)
+docker logs -f rl-swarm-swarm-cpu-1 > ~/rl-swarm-logs.txt &
+
+# 3. Bu dosyayı config.ini'de kullan
+# log_file_path = /home/your-user/rl-swarm-logs.txt
 ```
+
+**Neden Docker logları?**
+- RL-Swarm Docker container içinde çalışır
+- Loglar container içinde, dışarıdan erişilemez
+- Docker logs komutu ile logları dosyaya yönlendiriyoruz
+- Swarm Pulse bu dosyayı okuyabilir
 
 **Manuel yol - Yaygın konumlar:**
 ```bash
-# Kontrol et (bunlardan biri olabilir):
-ls ~/.codezero/logs/node.log
-ls ~/codezero/logs/node.log
-ls /var/log/codezero/node.log
-ls /opt/codezero/logs/node.log
+# rl-swarm dizinini bul
+cd ~/rl-swarm
 
-# Veya ara:
-find ~ -name "*node*.log" 2>/dev/null | grep -i codezero
-```
+# Docker container'ları listele
+docker ps
 
-**CodeZero node'u nasıl çalıştırdığını kontrol et:**
-```bash
-# Process'i bul
-ps aux | grep codezero
-
-# Log parametresine bak
-# Genellikle --log-file veya --log-dir parametresi vardır
+# Logları göster
+docker logs -f <container-name>
 ```
 
 ### 3. Config Dosyasını Oluştur
